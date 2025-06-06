@@ -1,4 +1,4 @@
-﻿#include<iostream>
+#include<iostream>
 using namespace std;
 
 void FillRand(int arr[], const int n);
@@ -7,33 +7,23 @@ void Print(int arr[], const int n);
 void main()
 {
 	setlocale(LC_ALL, "");
-
-	int n;
-	cout << "Введите размер массива: "; cin >> n;
-	int* arr = new int[n];
-
+	const int n = 5;
+	int arr[n];
+	cout << typeid(arr).name() << endl;
 	FillRand(arr, n);
 	Print(arr, n);
 
-	delete[] arr;
-
 }
-	
 void FillRand(int arr[], const int n)
 {
-
-	for (int i = 0; i < n; i++)
+	for (int i = 0;i < n;i++)
 	{
-		*(arr + i) = rand() % 100;
-
+		arr[i] = rand() % 100;
 	}
-
 }
-
 void Print(int arr[], const int n)
 {
-	cout << arr << endl;
-	cout << *arr << endl;
+	cout << typeid(arr).name() << endl;
 	for (int i = 0;i < n;i++)
 	{
 		cout << arr[i] << "\t";
