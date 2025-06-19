@@ -1,6 +1,9 @@
 ﻿#include<iostream>
 using namespace std;
 
+int** Allocate(const int rows, const int cols);
+void Clear(int**& arr, const int rows, const int cols = 0);
+
 void FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
 void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
 void Print(int arr[], const int n);
@@ -13,8 +16,13 @@ int* pop_back(int arr[], int& n);
 int* pop_front(int arr[], int& n);
 
 int** push_row_back(int** arr,int& rows, const int cols);
+int** insert_row(int** arr, int& rows, const int cols, const int index);
 
 void push_col_back(int** arr, const int rows, int& cols);
+
+
+
+
 //#define DYNAMIC_MEMORY_1
 #define DYNAMIC_MEMORY_2
 
@@ -57,20 +65,9 @@ void main()
 	cout << "Введите колисчество строк: "; cin >> rows;
 	cout << "Введите колисчество элементов строки: "; cin >> cols;
 
-
-	//////////////////////////////////////////////////////////
-	///    Объявление двумерного динамического массива     ///
-	//////////////////////////////////////////////////////////
-
-	//1) создаем массив указателей:
-	int** arr = new int* [rows];
-
-	//2) выделяем память под строки:
-	for (int i = 0; i < rows; i++)
-	{
-		arr[i] = new int[cols];
-	}
-
+	int** arr = Allocate(rows, cols);
+	
+	
     ///////////////////////////////////////////////////////////////
 	
 	FillRand(arr, rows, cols);
@@ -84,12 +81,39 @@ void main()
 	for (int i = 0; i < rows; i++)arr[i][cols - 1] = rand() % 1000;
 	Print(arr, rows, cols);
 	
-
-	///////////////////////////////////////////////////////////////
+	int index;
+	cout << "Введите индекс добавляемого значения: "; cin >> index;
+	arr = insert_row(arr, rows, cols, index);
+	Print(arr, rows, cols);
 
 	//////////////////////////////////////////////////////////
-	////    удаление двумерного динамического массива     ////
+
+	Clear(arr, rows, cols);
+
+}
+
+int** Allocate(const int rows, const int cols)
+{
 	//////////////////////////////////////////////////////////
+	///    Объявление двумерного динамического массива     ///
+	//////////////////////////////////////////////////////////
+
+	//1) создаем массив указателей:
+	int** arr = new int* [rows];
+
+	//2) выделяем память под строки:
+	for (int i = 0; i < rows; i++)
+	{
+		arr[i] = new int[cols];
+	}
+	return arr;
+}
+
+void Clear(int**& arr, const int rows, const int cols)
+{
+	    //////////////////////////////////////////////////////////
+		////    удаление двумерного динамического массива     ////
+		//////////////////////////////////////////////////////////
 
 	//1) сначала удаляются строки двумерного массива:
 	for (int i = 0; i < rows; i++)
@@ -100,9 +124,10 @@ void main()
 	//2) только теперь можно удалить массив указателей
 	delete[] arr;
 
-
+	//3) зануляем указатель на массив
+	arr = nullptr;
 }
-	
+
 void FillRand(int arr[], const int n, int minRand, int maxRand)
 {
 
@@ -235,6 +260,22 @@ int** push_row_back(int** arr, int& rows, const int cols)
 	rows++;
 
 	//6)  Возвращаем новый массив
+	return buffer;
+}
+
+int** insert_row(int** arr, int& rows, const int cols, const int index)
+{
+	if (index<0 || index >rows)
+	{
+		cout << "Error: Out of range exception" << endl;
+		return arr;
+	}
+	int** buffer = new int* [rows + 1] {};
+	for (int i = 0; i < index; i++)buffer[i] = arr[i];
+	for (int i = index; i < rows; i++)buffer[i + 1] = arr[i];
+	delete[] arr;
+	buffer[index] = new int[cols] {};
+	rows++;
 	return buffer;
 }
 
